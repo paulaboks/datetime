@@ -1,0 +1,14 @@
+{
+	"name": "@paulaboks/datetime",
+	"version": "0.1.0",
+	"exports": "./mod.ts",
+	"imports": {
+		"@std": "jsr:@std"
+	},
+	"fmt": {
+		"useTabs": true,
+		"indentWidth": 4,
+		"lineWidth": 120,
+		"newLineKind": "lf"
+	}
+}
