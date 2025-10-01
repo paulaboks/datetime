@@ -1,4 +1,4 @@
-const format_default = Intl.DateTimeFormat().resolvedOptions();
+const format_default: Intl.ResolvedDateTimeFormatOptions = Intl.DateTimeFormat().resolvedOptions();
 
 export const defaults = {
 	timezone: format_default.timeZone,
@@ -96,7 +96,7 @@ export class DateTime {
 		return parseInt(this.#get_parts().second, 10);
 	}
 
-	format(format_string: string) {
+	format(format_string: string): string {
 		const parts = this.#get_parts();
 
 		const map: Record<string, string> = {
