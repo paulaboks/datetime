@@ -66,6 +66,34 @@ export class DateTime {
 		return new DateTime(new Date(), zone);
 	}
 
+	toString(): string {
+		const date_utc = new Date(this.#date.toLocaleString(defaults.locale, { timeZone: this.#zone }));
+		const offsetMinutes = -date_utc.getTimezoneOffset();
+
+		const sign = offsetMinutes >= 0 ? "+" : "-";
+		const abs_offset = Math.abs(offsetMinutes);
+		const offset_hour = String(Math.floor(abs_offset / 60)).padStart(2, "0");
+		const offset_minute = String(abs_offset % 60).padStart(2, "0");
+		const offset = `${sign}${offset_hour}:${offset_minute}`;
+		return `${this.format("yyyy-MM-ddTHH:mm:ss")}${offset}`;
+	}
+
+	[Symbol.toPrimitive](hint: string): string | number {
+		if (hint === "string") {
+			return this.toString();
+		}
+
+		if (hint === "number") {
+			return this.#date.getTime();
+		}
+
+		return this.toString();
+	}
+
+	toJSON(): string {
+		return this.toString();
+	}
+
 	#get_parts() {
 		const formatter = DateTime.#get_formatter(this.#zone);
 		const parts = formatter.formatToParts(this.#date);
