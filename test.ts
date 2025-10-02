@@ -87,3 +87,10 @@ Deno.test("Weird old date issue", () => {
 
 	assertEquals(datetime.toString(), "1914-01-01T20:30:00-03:00");
 });
+
+Deno.test("Get weekday", () => {
+	const datetime = DateTime.from("2025-01-01T20:30:00");
+
+	// 1 jan 2025 -> wed -> 3
+	assertEquals(datetime.weekday, 3);
+});

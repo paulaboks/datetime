@@ -6,7 +6,6 @@ export const defaults = {
 };
 
 const date_string_regex = /^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2}))?)?(Z|[+-]\d{2}:\d{2})?$/;
-//const date_string_complete_regex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))/;
 
 export class DateTime {
 	#date: Date;
@@ -26,6 +25,7 @@ export class DateTime {
 			hour: "2-digit",
 			minute: "2-digit",
 			second: "2-digit",
+			weekday: "long",
 		});
 	}
 
@@ -195,6 +195,24 @@ export class DateTime {
 
 	set second(value: number) {
 		this.#set_part("second", value);
+	}
+
+	get weekday(): number {
+		const saved_locale = defaults.locale;
+		defaults.locale = "en-US";
+
+		const day_map: Record<string, number> = {
+			"Sunday": 0,
+			"Monday": 1,
+			"Tuesday": 2,
+			"Wednesday": 3,
+			"Thursday": 4,
+			"Friday": 5,
+			"Saturday": 6,
+		};
+		const parts = this.#get_parts();
+		defaults.locale = saved_locale;
+		return day_map[parts.weekday];
 	}
 
 	format(format_string: string): string {
