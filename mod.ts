@@ -34,9 +34,15 @@ export class DateTime {
 			throw new Error("Invalid datetime format. Use YYYY-MM-DDTHH:mm[:ss]");
 		}
 
-		const [_, year, month, day, hour = 0, minute = 0, second = 0] = match.map((m) =>
+		let [_, year, month, day, hour = 0, minute = 0, second = 0] = match.map((m) =>
 			typeof m === "string" ? Number(m) : m
 		);
+
+		// Something scary seems to have happened in 1913
+		if (year <= 1913) {
+			console.warn("Date before 1913 used, that caused some big issues so lets limit to 1914");
+			year = 1914;
+		}
 
 		const utc_date = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
 

@@ -70,3 +70,9 @@ Deno.test("DateTime add time", () => {
 
 	assertEquals(datetime.toString(), "2025-10-01T20:30:00-03:00");
 });
+
+Deno.test("Weird old date issue", () => {
+	const datetime = DateTime.from("1900-01-01T20:30:00");
+
+	assertEquals(datetime.toString(), "1914-01-01T20:30:00-03:00");
+});
