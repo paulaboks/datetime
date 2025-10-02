@@ -63,3 +63,10 @@ Deno.test("DateTime in JSON.stringify", () => {
 
 	assertEquals(JSON.stringify({ datetime }), `{"datetime":"2025-10-01T14:30:00-03:00"}`);
 });
+
+Deno.test("DateTime add time", () => {
+	const datetime = DateTime.from("2025-10-01T14:30:00");
+	datetime.hour += 6;
+
+	assertEquals(datetime.toString(), "2025-10-01T20:30:00-03:00");
+});

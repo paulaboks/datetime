@@ -100,28 +100,94 @@ export class DateTime {
 		return Object.fromEntries(parts.map((p) => [p.type, p.value]));
 	}
 
+	#set_part(part: "year" | "month" | "day" | "hour" | "minute" | "second", value: number) {
+		const parts = this.#get_parts();
+
+		const updated = {
+			year: parseInt(parts.year, 10),
+			month: parseInt(parts.month, 10) - 1,
+			day: parseInt(parts.day, 10),
+			hour: parseInt(parts.hour, 10),
+			minute: parseInt(parts.minute, 10),
+			second: parseInt(parts.second, 10),
+			[part]: value,
+		};
+
+		const local_date = new Date(Date.UTC(
+			updated.year,
+			updated.month,
+			updated.day,
+			updated.hour,
+			updated.minute,
+			updated.second,
+		));
+
+		// Recalculate the correct UTC timestamp to reflect the target time in the configured zone
+		const formatter = DateTime.#get_formatter(this.#zone);
+		const formatted = formatter.formatToParts(local_date);
+		const map: Record<string, string> = {};
+		for (const { type, value } of formatted) {
+			map[type] = value;
+		}
+		const local_time = Date.UTC(
+			parseInt(map.year, 10),
+			parseInt(map.month, 10) - 1,
+			parseInt(map.day, 10),
+			parseInt(map.hour, 10),
+			parseInt(map.minute, 10),
+			parseInt(map.second, 10),
+		);
+		const offset = local_time - local_date.getTime();
+
+		this.#date = new Date(local_date.getTime() - offset);
+	}
+
 	get year(): number {
 		return parseInt(this.#get_parts().year, 10);
+	}
+
+	set year(value: number) {
+		this.#set_part("year", value);
 	}
 
 	get month(): number {
 		return parseInt(this.#get_parts().month, 10) - 1;
 	}
 
+	set month(value: number) {
+		this.#set_part("month", value);
+	}
+
 	get day(): number {
 		return parseInt(this.#get_parts().day, 10);
+	}
+
+	set day(value: number) {
+		this.#set_part("day", value);
 	}
 
 	get hour(): number {
 		return parseInt(this.#get_parts().hour, 10);
 	}
 
+	set hour(value: number) {
+		this.#set_part("hour", value);
+	}
+
 	get minute(): number {
 		return parseInt(this.#get_parts().minute, 10);
 	}
 
+	set minute(value: number) {
+		this.#set_part("minute", value);
+	}
+
 	get second(): number {
 		return parseInt(this.#get_parts().second, 10);
+	}
+
+	set second(value: number) {
+		this.#set_part("second", value);
 	}
 
 	format(format_string: string): string {
