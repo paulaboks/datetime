@@ -37,6 +37,17 @@ Deno.test("Creating a DateTime from a date string", () => {
 	assertEquals(datetime.day, 1);
 });
 
+Deno.test("Creating a DateTime from a complete date string", () => {
+	const datetime = DateTime.from("2025-10-01T14:30:00-03:00");
+
+	assertEquals(datetime.year, 2025);
+	assertEquals(datetime.month, 9);
+	assertEquals(datetime.day, 1);
+	assertEquals(datetime.hour, 14);
+	assertEquals(datetime.minute, 30);
+	assertEquals(datetime.second, 0);
+});
+
 Deno.test("Formatting DateTime", () => {
 	const datetime = DateTime.from("2025-10-01T14:30:00");
 
