@@ -49,13 +49,19 @@ export class DateTime {
 
 		const formatter = DateTime.#get_formatter(zone);
 		const parts = formatter.formatToParts(utc_date);
-		const map: Record<string, number> = {};
+		const map: Record<string, string> = {};
 		for (const { type, value } of parts) {
-			map[type] = parseInt(value, 10);
+			map[type] = value;
 		}
 
-		// Get offset in minutes between local time in target zone and UTC
-		const local_time = Date.UTC(map.year, map.month - 1, map.day, map.hour, map.minute, map.second);
+		const local_year = parseInt(map.year, 10);
+		const local_month = parseInt(map.month, 10);
+		const local_day = parseInt(map.day, 10);
+		const local_hour = parseInt(map.hour, 10);
+		const local_minute = parseInt(map.minute, 10);
+		const local_second = parseInt(map.second, 10);
+
+		const local_time = Date.UTC(local_year, local_month - 1, local_day, local_hour, local_minute, local_second);
 		const offset_ms = local_time - utc_date.getTime();
 
 		const utc_timestamp = Date.UTC(year, month - 1, day, hour, minute, second) - offset_ms;
@@ -68,25 +74,14 @@ export class DateTime {
 	}
 
 	toString(): string {
-		const formatter = DateTime.#get_formatter(this.#zone);
-		const parts = formatter.formatToParts(this.#date);
-		const map: Record<string, number> = {};
-		for (const { type, value } of parts) {
-			map[type] = parseInt(value, 10);
-		}
-
-		// Get offset in minutes between local time in target zone and UTC
-		const local_time = Date.UTC(map.year, map.month - 1, map.day, map.hour, map.minute, map.second);
-		const utc_time = this.#date.getTime();
-		const offsetMinutes = (local_time - utc_time) / (60 * 1000);
+		const date_utc = new Date(this.#date.toLocaleString(defaults.locale, { timeZone: this.#zone }));
+		const offsetMinutes = -date_utc.getTimezoneOffset();
 
 		const sign = offsetMinutes >= 0 ? "+" : "-";
 		const abs_offset = Math.abs(offsetMinutes);
 		const offset_hour = String(Math.floor(abs_offset / 60)).padStart(2, "0");
 		const offset_minute = String(abs_offset % 60).padStart(2, "0");
 		const offset = `${sign}${offset_hour}:${offset_minute}`;
-
-		// Format the final string using your existing format() method
 		return `${this.format("yyyy-MM-ddTHH:mm:ss")}${offset}`;
 	}
 
