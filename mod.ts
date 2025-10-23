@@ -2,7 +2,7 @@ const format_default: Intl.ResolvedDateTimeFormatOptions = Intl.DateTimeFormat()
 
 export const defaults = {
 	timezone: format_default.timeZone,
-	locale: format_default.locale,
+	locale: "en-GB",
 };
 
 const date_string_regex = /^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2}))?)?(Z|[+-]\d{2}:\d{2})?$/;
